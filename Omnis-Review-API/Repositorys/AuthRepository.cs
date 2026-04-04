@@ -18,6 +18,11 @@ public class AuthRepository : IAuthRepository
         return await _userManager.FindByEmailAsync(email);
     }
 
+    public async Task<ApplicationUser?> FindByUserNameAsync(string userName)
+    {
+        return await _userManager.FindByNameAsync(userName);
+    }
+
     public async Task<bool> CheckPasswordAsync(ApplicationUser user, string password)
     {
         return await _userManager.CheckPasswordAsync(user, password);

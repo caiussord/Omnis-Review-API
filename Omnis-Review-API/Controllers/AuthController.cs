@@ -49,4 +49,15 @@ public class AuthController : ControllerBase
 
         return Ok(new { Status = "Success", Message = result.Message });
     }
+
+    [HttpGet]
+    [Route("username-exists")]
+    public async Task<IActionResult> UserNameExists([FromQuery] string userName)
+    {
+        if (string.IsNullOrWhiteSpace(userName))
+            return BadRequest(new { Message = "Username is required." });
+
+        var exists = await _authService.UserNameExistsAsync(userName);
+        return Ok(new { exists });
+    }
 }
