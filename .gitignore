@@ -56,3 +56,8 @@ _ReSharper*/
 .DS_Store
 
 # End of https://www.gitignore.io/api/visualstudio,csharp
+
+# App settings secrets
+appsettings.Development.json
+appsettings.*.json
+!appsettings.json
