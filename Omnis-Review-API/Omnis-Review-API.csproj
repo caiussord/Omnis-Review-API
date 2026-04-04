@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>OmnisReview</RootNamespace>
     <AssemblyName>OmnisReview</AssemblyName>
+    <UserSecretsId>33e180ad-e29d-44c3-920d-9134d8c90d3e</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
