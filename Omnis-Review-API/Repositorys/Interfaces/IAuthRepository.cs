@@ -1,7 +1,7 @@
-using CCSS_API.Models;
+using OmnisReview.Models;
 using Microsoft.AspNetCore.Identity;
 
-namespace CCSS_API.Repositorys.Interfaces;
+namespace OmnisReview.Repositorys.Interfaces;
 
 public interface IAuthRepository
 {

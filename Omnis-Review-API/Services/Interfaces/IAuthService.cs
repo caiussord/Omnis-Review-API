@@ -1,6 +1,6 @@
-using CCSS_API.Models;
+using OmnisReview.Models;
 
-namespace CCSS_API.Services.Interfaces;
+namespace OmnisReview.Services.Interfaces;
 
 public interface IAuthService
 {

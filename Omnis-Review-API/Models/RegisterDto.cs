@@ -1,4 +1,4 @@
-namespace CCSS_API.Models;
+namespace OmnisReview.Models;
 
 public class RegisterDto
 {

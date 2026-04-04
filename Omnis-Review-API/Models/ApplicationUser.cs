@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 
-namespace CCSS_API.Models;
+namespace OmnisReview.Models;
 
 public class ApplicationUser : IdentityUser<Guid>
 {

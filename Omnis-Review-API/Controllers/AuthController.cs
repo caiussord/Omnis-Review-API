@@ -1,8 +1,8 @@
-using CCSS_API.Models;
-using CCSS_API.Services.Interfaces;
+using OmnisReview.Models;
+using OmnisReview.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CCSS_API.Controllers;
+namespace OmnisReview.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]

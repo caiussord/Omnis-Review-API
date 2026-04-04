@@ -1,12 +1,12 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using CCSS_API.Models;
-using CCSS_API.Repositorys.Interfaces;
-using CCSS_API.Services.Interfaces;
+using OmnisReview.Models;
+using OmnisReview.Repositorys.Interfaces;
+using OmnisReview.Services.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 
-namespace CCSS_API.Services;
+namespace OmnisReview.Services;
 
 public class AuthService : IAuthService
 {

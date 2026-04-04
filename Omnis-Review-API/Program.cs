@@ -1,7 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
-using CCSS_API.Repositorys.Interfaces;
-using CCSS_API.Services.Interfaces;
+using OmnisReview.Repositorys.Interfaces;
+using OmnisReview.Services.Interfaces;
+using OmnisReview.Data;
+using OmnisReview.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,15 +13,15 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Add dependency injection for services and repositories
-builder.Services.AddScoped<IAuthRepository, CCSS_API.Repositorys.AuthRepository>();
-builder.Services.AddScoped<IAuthService, CCSS_API.Services.AuthService>();
+builder.Services.AddScoped<IAuthRepository, OmnisReview.Repositorys.AuthRepository>();
+builder.Services.AddScoped<IAuthService, OmnisReview.Services.AuthService>();
 
 //CONFIGURAÇÃO EF E IDENTITY
-builder.Services.AddDbContext<CCSS_API.Data.ApplicationDbContext>(options =>
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddIdentity<CCSS_API.Models.ApplicationUser, IdentityRole<Guid>>()
-    .AddEntityFrameworkStores<CCSS_API.Data.ApplicationDbContext>()
+builder.Services.AddIdentity<ApplicationUser, IdentityRole<Guid>>()
+    .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
 builder.Services.AddAuthentication(options =>
