@@ -8,7 +8,7 @@ A **Omnis Review** é uma API robusta desenvolvida em ASP.NET Core projetada par
 Diferente de plataformas especializadas em apenas um tipo de mídia, a Omnis Review utiliza uma arquitetura escalável para lidar com as particularidades de cada formato. A aplicação permite o gerenciamento completo de bibliotecas pessoais, onde usuários podem atribuir notas, escrever resenhas detalhadas e filtrar conteúdos por diversas categorias.
 
 ## Tecnologias Utilizadas
-* C# / .NET 8
+* C# 14 / .NET 10
 * Entity Framework Core (Abordagem Code First)
 * ASP.NET Core Identity (Gestão de usuários e permissões)
 * JWT (JSON Web Tokens) (Autenticação e segurança das rotas)
