@@ -1,0 +1,9 @@
+namespace CCSS_API.Models;
+
+public class AuthResponseDto
+{
+    public bool IsSuccess { get; set; }
+    public string Message { get; set; } = string.Empty;
+    public string? Token { get; set; }
+    public DateTime? Expiration { get; set; }
+}

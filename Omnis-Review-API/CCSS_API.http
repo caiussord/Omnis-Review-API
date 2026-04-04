@@ -1,0 +1,28 @@
+@CCSS_API_HostAddress = http://localhost:5168
+
+GET {{CCSS_API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
+
+POST {{CCSS_API_HostAddress}}/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "User Test",
+  "email": "test@test.com",
+  "password": "Password123!",
+  "birth_Date": "1990-01-01"
+}
+
+###
+
+POST {{CCSS_API_HostAddress}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@test.com",
+  "password": "Password123!"
+}
+
+###
