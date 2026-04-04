@@ -6,6 +6,7 @@ namespace OmnisReview.Repositorys.Interfaces;
 public interface IAuthRepository
 {
     Task<ApplicationUser?> FindByEmailAsync(string email);
+    Task<ApplicationUser?> FindByUserNameAsync(string userName);
     Task<bool> CheckPasswordAsync(ApplicationUser user, string password);
     Task<IList<string>> GetRolesAsync(ApplicationUser user);
     Task<IdentityResult> CreateUserAsync(ApplicationUser user, string password);

@@ -22,6 +22,10 @@ public class AuthService : IAuthService
     public async Task<AuthResponseDto> LoginAsync(LoginDto model)
     {
         var user = await _authRepository.FindByEmailAsync(model.Email);
+        if (user == null)
+        {
+            user = await _authRepository.FindByUserNameAsync(model.Email);
+        }
         
         if (user != null && await _authRepository.CheckPasswordAsync(user, model.Password))
         {
@@ -57,7 +61,11 @@ public class AuthService : IAuthService
     {
         var userExists = await _authRepository.FindByEmailAsync(model.Email);
         if (userExists != null)
-            return new AuthResponseDto { IsSuccess = false, Message = "User already exists!" };
+            return new AuthResponseDto { IsSuccess = false, Message = "Email already exists" };
+
+        var userNameExists = await _authRepository.FindByUserNameAsync(model.UserName);
+        if (userNameExists != null)
+            return new AuthResponseDto { IsSuccess = false, Message = "Username already exists" };
 
         ApplicationUser user = new()
         {
@@ -77,6 +85,12 @@ public class AuthService : IAuthService
         }
 
         return new AuthResponseDto { IsSuccess = true, Message = "User created successfully" };
+    }
+
+    public async Task<bool> UserNameExistsAsync(string userName)
+    {
+        var user = await _authRepository.FindByUserNameAsync(userName);
+        return user != null;
     }
 
     private JwtSecurityToken GetToken(List<Claim> authClaims)
