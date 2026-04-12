@@ -1,39 +1,153 @@
+﻿
 
+# Omnis Review API
 
-# Omnis Review: API de Gerenciamento de Críticas Multiplataforma
+API robusta desenvolvida em **ASP.NET Core** para gerenciamento centralizado de críticas de filmes, séries, livros e games.
 
-A **Omnis Review** é uma API robusta desenvolvida em ASP.NET Core projetada para centralizar o registro e a avaliação de diferentes formas de entretenimento: filmes, séries, livros e games. O projeto foca em fornecer uma estrutura unificada e desacoplada, capaz de servir diferentes interfaces através de uma comunicação baseada em REST.
+## Sobre
 
-## Sobre o Projeto
-Diferente de plataformas especializadas em apenas um tipo de mídia, a Omnis Review utiliza uma arquitetura escalável para lidar com as particularidades de cada formato. A aplicação permite o gerenciamento completo de bibliotecas pessoais, onde usuários podem atribuir notas, escrever resenhas detalhadas e filtrar conteúdos por diversas categorias.
+A **Omnis Review** oferece uma plataforma unificada para que usuários gerenciem suas bibliotecas pessoais de entretenimento, atribuindo notas, escrevendo resenhas e filtrando conteúdos por diversas categorias.
 
-## Tecnologias Utilizadas
-* C# 14 / .NET 10
-* Entity Framework Core (Abordagem Code First)
-* ASP.NET Core Identity (Gestão de usuários e permissões)
-* JWT (JSON Web Tokens) (Autenticação e segurança das rotas)
-* SQL Server (Banco de dados relacional)
-* Swagger/OpenAPI (Documentação e teste de endpoints)
+## Stack
 
-## Funcionalidades Principais
-* **Sistema de Autenticação:** Implementação de Identity com suporte a Tokens JWT, garantindo o acesso seguro aos recursos da API.
-* **Catálogo Unificado:** CRUD especializado para Filmes, Séries, Livros e Jogos, respeitando as propriedades específicas de cada mídia através de modelagem avançada.
-* **Mecanismo de Review:** Sistema de pontuação e comentários com persistência via Entity Framework e validação de regras de negócio.
-* **Arquitetura de Dados:** Uso de relacionamentos complexos para otimizar a organização por gêneros, autores, diretores e plataformas.
-* **Filtros e Consultas:** Endpoints otimizados via LINQ para recuperação de rankings, médias de notas e buscas personalizadas.
-* **CORS Policy:** Configuração de política de compartilhamento de recursos para permitir o consumo seguro por clientes externos.
+- **Runtime:** .NET 10 (C# 14)
+- **Banco de Dados:** SQL Server (Entity Framework Core)
+- **Autenticação:** ASP.NET Core Identity + JWT
+- **Testes:** NUnit 4.2.2 + Moq 4.20.70
+- **Documentação:** Swagger/OpenAPI
 
-## Como Executar
-1. Clone o repositório:
-   ```bash
-   git clone https://github.com/seu-usuario/omnis-review-api.git
-   ```
-2. Configure a Connection String no arquivo appsettings.json.
-3. Execute as migrações para preparar o banco de dados:
-   ```bash
-   dotnet ef database update
-   ```
-4. Inicie o servidor:
-   ```bash
-   dotnet run
-   ```
+## Funcionalidades
+
+- Autenticação e autorização com JWT
+- CRUD unificado (Filmes, Séries, Livros, Games)
+- Sistema de pontuação e resenhas
+- Filtros e consultas otimizadas
+- CORS configurável
+- 41 testes unitários (100% passing)
+
+## Instalação
+
+### Pré-requisitos
+- .NET 10 SDK
+- SQL Server
+
+### Setup
+
+```bash
+# 1. Clonar repositório
+git clone https://github.com/caiussord/Omnis-Review-API.git
+cd Omnis-Review-API
+
+# 2. Restaurar dependências
+dotnet restore
+
+# 3. Configurar appsettings.json
+# - Atualizar connection string do SQL Server
+# - Configurar variáveis de JWT
+
+# 4. Executar migrations
+dotnet ef database update
+
+# 5. Iniciar API
+dotnet run
+```
+
+A API estará disponível em `https://localhost:7001`
+
+## Testes
+
+O projeto inclui **41 testes unitários** cobrindo todas as camadas:
+
+| Camada | Qtd | Descrição |
+|--------|-----|-----------|
+| Services | 13 | Lógica de negócio |
+| Repositories | 14 | Acesso a dados |
+| Controllers | 14 | Endpoints HTTP |
+
+### Executar Testes
+
+```bash
+# Todos os testes
+dotnet test
+
+# Com verbosidade
+dotnet test --verbosity normal
+
+# Testes específicos
+dotnet test --filter "AuthServiceTests"
+
+# Com cobertura de código
+dotnet test /p:CollectCoverage=true
+```
+
+**Status:** 41/41 passando (1.2s)
+
+## Documentação
+
+- [**Testes**](./Omnis-Review-API.Tests/README.md) - Padrões e cobertura de testes
+- [**Git Conventions**](./GIT_CONVENTIONS.md) - Padrões de branches e commits
+- [**Instruções NUnit**](./copilot-instructions-tests.md) - Guia de testes
+- [**Configurações**](./CONFIGURACAO.md) - Setup e variáveis de ambiente
+- [**Swagger**](https://localhost:7001/swagger) - API interativa (quando rodando)
+
+## Estrutura
+
+```
+Omnis-Review-API/
+├── Controllers/              # Endpoints HTTP
+├── Services/                 # Lógica de negócio
+├── Repositorys/              # Acesso a dados
+├── Models/                   # DTOs e entidades
+├── Data/                     # DbContext
+├── Migrations/               # EF Core migrations
+├── Omnis-Review-API.Tests/   # Testes unitários
+├── Program.cs                # Configuração da API
+└── appsettings.json          # Configurações
+
+Omnis-Review-API.Tests/
+├── Services/                 # Testes de serviços
+├── Repositorys/              # Testes de repositórios
+├── Controllers/              # Testes de controllers
+└── Helpers/                  # Builders de dados
+```
+
+## Padrões
+
+### Testes
+- **AAA Pattern:** Arrange-Act-Assert
+- **Mocking:** Moq com isolamento de dependências
+- **Builders:** Fluent builders para dados de teste
+- **Cobertura:** Happy Path + Exceções + Edge Cases
+
+### Git
+- **Branches:** `feat/`, `fix/`, `hotfix/`, `refactor/`, `test/`, `docs/`, `chore/`
+- **Commits:** `type(scope): subject`
+- Exemplo: `feat(auth): implement jwt token generation`
+
+## Como Contribuir
+
+1. Criar branch seguindo padrão: `feat/descricao-funcionalidade`
+2. Implementar com testes
+3. Commits com padrão convencional
+4. Pull request com descrição clara
+5. Verificar que todos os 41 testes passam
+
+## Variáveis de Ambiente
+
+```json
+{
+  "Jwt": {
+    "SecretKey": "sua-chave-secreta-aqui",
+    "ExpirationMinutes": 60
+  },
+  "Database": {
+    "DefaultConnection": "Server=.;Database=OmnisReviewDb;Integrated Security=true;"
+  }
+}
+```
+
+Veja [appsettings.example.json](./appsettings.example.json) para template completo.
+
+## Licença
+
+Projeto pessoal - Omnis Review API

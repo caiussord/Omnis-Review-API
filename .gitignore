@@ -55,9 +55,44 @@ _ReSharper*/
 # Mac
 .DS_Store
 
-# End of https://www.gitignore.io/api/visualstudio,csharp
-
-# App settings secrets
+# Configuration and Environment Files
+# Application Settings
 appsettings.Development.json
+appsettings.Production.json
+appsettings.Staging.json
 appsettings.*.json
 !appsettings.json
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Secrets
+*.secrets
+*.pem
+*.key
+*.pfx
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Test Results
+TestResults/
+*.trx
+coverage/
+*.coverage
+
+# IDE and Editor settings
+.idea/
+*.swp
+*.swo
+*~
+.vimrc
+
+# Project specific
+launchSettings.json
+
+# End of https://www.gitignore.io/api/visualstudio,csharp
