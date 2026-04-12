@@ -25,6 +25,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IAuthRepository, OmnisReview.Repositorys.AuthRepository>();
 builder.Services.AddScoped<IAuthService, OmnisReview.Services.AuthService>();
 builder.Services.AddHttpClient<ITmdbService, OmnisReview.Services.TmdbService>();
+builder.Services.AddHttpClient<IGoogleBooksService, OmnisReview.Services.GoogleBooksService>();
 
 //CONFIGURAÇÃO EF E IDENTITY
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
