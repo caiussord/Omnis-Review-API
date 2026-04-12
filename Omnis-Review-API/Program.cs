@@ -24,6 +24,7 @@ builder.Services.AddSwaggerGen();
 // Add dependency injection for services and repositories
 builder.Services.AddScoped<IAuthRepository, OmnisReview.Repositorys.AuthRepository>();
 builder.Services.AddScoped<IAuthService, OmnisReview.Services.AuthService>();
+builder.Services.AddHttpClient<ITmdbService, OmnisReview.Services.TmdbService>();
 
 //CONFIGURAÇÃO EF E IDENTITY
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
