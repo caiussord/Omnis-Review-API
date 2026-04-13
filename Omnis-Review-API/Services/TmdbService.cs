@@ -19,33 +19,33 @@ public class TmdbService : ITmdbService
         _apiKey = _configuration["Tmdb:ApiKey"] ?? throw new InvalidOperationException("TMDB API key not configured");
     }
 
-    public async Task<TmdbPagedResultDto<TmdbMovieDto>?> SearchMoviesAsync(string query, int page = 1, string language = "en-US")
+    public async Task<TmdbPagedResultDto<TmdbMovieDto>?> SearchMoviesAsync(string query, int page = 1, string language = "pt-BR")
     {
         var url = $"{BaseUrl}/search/movie?api_key={_apiKey}&query={Uri.EscapeDataString(query)}&page={page}&language={language}";
         return await GetAsync<TmdbPagedResultDto<TmdbMovieDto>>(url);
     }
 
-    public async Task<TmdbPagedResultDto<TmdbSeriesDto>?> SearchSeriesAsync(string query, int page = 1, string language = "en-US")
+    public async Task<TmdbPagedResultDto<TmdbSeriesDto>?> SearchSeriesAsync(string query, int page = 1, string language = "pt-BR")
     {
         var url = $"{BaseUrl}/search/tv?api_key={_apiKey}&query={Uri.EscapeDataString(query)}&page={page}&language={language}";
         return await GetAsync<TmdbPagedResultDto<TmdbSeriesDto>>(url);
     }
 
-    public async Task<TmdbMovieDetailsDto?> GetMovieDetailsAsync(int movieId, string language = "en-US")
+    public async Task<TmdbMovieDetailsDto?> GetMovieDetailsAsync(int movieId, string language = "pt-BR")
     {
         var url = $"{BaseUrl}/movie/{movieId}?api_key={_apiKey}&language={language}&append_to_response=credits,videos";
         return await GetAsync<TmdbMovieDetailsDto>(url);
     }
 
-    public async Task<TmdbSeriesDetailsDto?> GetSeriesDetailsAsync(int seriesId, string language = "en-US")
+    public async Task<TmdbSeriesDetailsDto?> GetSeriesDetailsAsync(int seriesId, string language = "pt-BR")
     {
         var url = $"{BaseUrl}/tv/{seriesId}?api_key={_apiKey}&language={language}&append_to_response=credits,videos";
         return await GetAsync<TmdbSeriesDetailsDto>(url);
     }
 
-    public async Task<List<TmdbCastDto>?> GetMovieCastAsync(int movieId)
+    public async Task<List<TmdbCastDto>?> GetMovieCastAsync(int movieId, string language = "pt-BR")
     {
-        var url = $"{BaseUrl}/movie/{movieId}/credits?api_key={_apiKey}";
+        var url = $"{BaseUrl}/movie/{movieId}/credits?api_key={_apiKey}&language={language}";
         var response = await GetAsync<dynamic>(url);
         
         if (response is null)
@@ -72,9 +72,9 @@ public class TmdbService : ITmdbService
         return cast;
     }
 
-    public async Task<List<TmdbCastDto>?> GetSeriesCastAsync(int seriesId)
+    public async Task<List<TmdbCastDto>?> GetSeriesCastAsync(int seriesId, string language = "pt-BR")
     {
-        var url = $"{BaseUrl}/tv/{seriesId}/credits?api_key={_apiKey}";
+        var url = $"{BaseUrl}/tv/{seriesId}/credits?api_key={_apiKey}&language={language}";
         var response = await GetAsync<dynamic>(url);
         
         if (response is null)
@@ -101,9 +101,9 @@ public class TmdbService : ITmdbService
         return cast;
     }
 
-    public async Task<List<TmdbVideoDto>?> GetMovieVideosAsync(int movieId)
+    public async Task<List<TmdbVideoDto>?> GetMovieVideosAsync(int movieId, string language = "pt-BR")
     {
-        var url = $"{BaseUrl}/movie/{movieId}/videos?api_key={_apiKey}";
+        var url = $"{BaseUrl}/movie/{movieId}/videos?api_key={_apiKey}&language={language}";
         var response = await GetAsync<dynamic>(url);
         
         if (response is null)
@@ -130,9 +130,9 @@ public class TmdbService : ITmdbService
         return videos;
     }
 
-    public async Task<List<TmdbVideoDto>?> GetSeriesVideosAsync(int seriesId)
+    public async Task<List<TmdbVideoDto>?> GetSeriesVideosAsync(int seriesId, string language = "pt-BR")
     {
-        var url = $"{BaseUrl}/tv/{seriesId}/videos?api_key={_apiKey}";
+        var url = $"{BaseUrl}/tv/{seriesId}/videos?api_key={_apiKey}&language={language}";
         var response = await GetAsync<dynamic>(url);
         
         if (response is null)
@@ -159,28 +159,40 @@ public class TmdbService : ITmdbService
         return videos;
     }
 
-    public async Task<TmdbPagedResultDto<TmdbMovieDto>?> GetPopularMoviesAsync(int page = 1, string language = "en-US")
+    public async Task<TmdbPagedResultDto<TmdbMovieDto>?> GetPopularMoviesAsync(int page = 1, string language = "pt-BR")
     {
         var url = $"{BaseUrl}/movie/popular?api_key={_apiKey}&page={page}&language={language}";
         return await GetAsync<TmdbPagedResultDto<TmdbMovieDto>>(url);
     }
 
-    public async Task<TmdbPagedResultDto<TmdbSeriesDto>?> GetPopularSeriesAsync(int page = 1, string language = "en-US")
+    public async Task<TmdbPagedResultDto<TmdbSeriesDto>?> GetPopularSeriesAsync(int page = 1, string language = "pt-BR")
     {
         var url = $"{BaseUrl}/tv/popular?api_key={_apiKey}&page={page}&language={language}";
         return await GetAsync<TmdbPagedResultDto<TmdbSeriesDto>>(url);
     }
 
-    public async Task<TmdbPagedResultDto<TmdbMovieDto>?> GetTopRatedMoviesAsync(int page = 1, string language = "en-US")
+    public async Task<TmdbPagedResultDto<TmdbMovieDto>?> GetTopRatedMoviesAsync(int page = 1, string language = "pt-BR")
     {
         var url = $"{BaseUrl}/movie/top_rated?api_key={_apiKey}&page={page}&language={language}";
         return await GetAsync<TmdbPagedResultDto<TmdbMovieDto>>(url);
     }
 
-    public async Task<TmdbPagedResultDto<TmdbSeriesDto>?> GetTopRatedSeriesAsync(int page = 1, string language = "en-US")
+    public async Task<TmdbPagedResultDto<TmdbSeriesDto>?> GetTopRatedSeriesAsync(int page = 1, string language = "pt-BR")
     {
         var url = $"{BaseUrl}/tv/top_rated?api_key={_apiKey}&page={page}&language={language}";
         return await GetAsync<TmdbPagedResultDto<TmdbSeriesDto>>(url);
+    }
+
+    public async Task<TmdbSeasonDto?> GetSeasonAsync(int seriesId, int seasonNumber, string language = "pt-BR")
+    {
+        var url = $"{BaseUrl}/tv/{seriesId}/season/{seasonNumber}?api_key={_apiKey}&language={language}";
+        return await GetAsync<TmdbSeasonDto>(url);
+    }
+
+    public async Task<TmdbEpisodeDto?> GetEpisodeAsync(int seriesId, int seasonNumber, int episodeNumber, string language = "pt-BR")
+    {
+        var url = $"{BaseUrl}/tv/{seriesId}/season/{seasonNumber}/episode/{episodeNumber}?api_key={_apiKey}&language={language}";
+        return await GetAsync<TmdbEpisodeDto>(url);
     }
 
     private async Task<T?> GetAsync<T>(string url)

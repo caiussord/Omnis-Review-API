@@ -103,4 +103,18 @@ public class TmdbController : ControllerBase
         var result = await _tmdbService.GetTopRatedSeriesAsync(page);
         return Ok(result);
     }
+
+    [HttpGet("series/{seriesId}/season/{seasonNumber}")]
+    public async Task<IActionResult> GetSeason([FromRoute] int seriesId, [FromRoute] int seasonNumber)
+    {
+        var result = await _tmdbService.GetSeasonAsync(seriesId, seasonNumber);
+        return Ok(result);
+    }
+
+    [HttpGet("series/{seriesId}/season/{seasonNumber}/episode/{episodeNumber}")]
+    public async Task<IActionResult> GetEpisode([FromRoute] int seriesId, [FromRoute] int seasonNumber, [FromRoute] int episodeNumber)
+    {
+        var result = await _tmdbService.GetEpisodeAsync(seriesId, seasonNumber, episodeNumber);
+        return Ok(result);
+    }
 }
