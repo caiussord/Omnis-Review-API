@@ -26,6 +26,7 @@ builder.Services.AddScoped<IAuthRepository, OmnisReview.Repositorys.AuthReposito
 builder.Services.AddScoped<IAuthService, OmnisReview.Services.AuthService>();
 builder.Services.AddHttpClient<ITmdbService, OmnisReview.Services.TmdbService>();
 builder.Services.AddHttpClient<IGoogleBooksService, OmnisReview.Services.GoogleBooksService>();
+builder.Services.AddHttpClient<IRawgService, OmnisReview.Services.RawgService>();
 
 //CONFIGURAÇÃO EF E IDENTITY
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
