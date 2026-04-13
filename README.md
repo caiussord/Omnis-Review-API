@@ -86,6 +86,23 @@ The TMDB (The Movie Database) integration provides access to comprehensive movie
 
 **Base URL**: `https://api.themoviedb.org/3`
 
+### 🇧🇷 Language Support
+
+By default, all TMDB endpoints return results in **Portuguese (Brazilian - pt-BR)**. You can override the language for individual requests by passing the `language` query parameter:
+
+```bash
+# Portuguese (default)
+curl "http://localhost:5168/api/tmdb/movies/search?query=Matrix&page=1"
+
+# English
+curl "http://localhost:5168/api/tmdb/movies/search?query=Matrix&page=1&language=en-US"
+
+# Other languages (ISO 639-1 code)
+curl "http://localhost:5168/api/tmdb/movies/search?query=Matrix&page=1&language=es-ES"
+```
+
+Supported language codes: `en-US`, `pt-BR`, `es-ES`, `fr-FR`, `de-DE`, `it-IT`, `ja-JP`, `zh-CN`, and others as supported by TMDB API.
+
 ### Key Endpoints
 
 | Method | Endpoint | Description |
