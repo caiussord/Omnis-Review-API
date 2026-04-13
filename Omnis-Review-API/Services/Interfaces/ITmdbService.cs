@@ -16,4 +16,6 @@ public interface ITmdbService
     Task<TmdbPagedResultDto<TmdbSeriesDto>?> GetPopularSeriesAsync(int page = 1, string language = "pt-BR");
     Task<TmdbPagedResultDto<TmdbMovieDto>?> GetTopRatedMoviesAsync(int page = 1, string language = "pt-BR");
     Task<TmdbPagedResultDto<TmdbSeriesDto>?> GetTopRatedSeriesAsync(int page = 1, string language = "pt-BR");
+    Task<TmdbSeasonDto?> GetSeasonAsync(int seriesId, int seasonNumber, string language = "pt-BR");
+    Task<TmdbEpisodeDto?> GetEpisodeAsync(int seriesId, int seasonNumber, int episodeNumber, string language = "pt-BR");
 }

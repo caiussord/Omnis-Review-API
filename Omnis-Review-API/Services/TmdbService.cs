@@ -183,6 +183,18 @@ public class TmdbService : ITmdbService
         return await GetAsync<TmdbPagedResultDto<TmdbSeriesDto>>(url);
     }
 
+    public async Task<TmdbSeasonDto?> GetSeasonAsync(int seriesId, int seasonNumber, string language = "pt-BR")
+    {
+        var url = $"{BaseUrl}/tv/{seriesId}/season/{seasonNumber}?api_key={_apiKey}&language={language}";
+        return await GetAsync<TmdbSeasonDto>(url);
+    }
+
+    public async Task<TmdbEpisodeDto?> GetEpisodeAsync(int seriesId, int seasonNumber, int episodeNumber, string language = "pt-BR")
+    {
+        var url = $"{BaseUrl}/tv/{seriesId}/season/{seasonNumber}/episode/{episodeNumber}?api_key={_apiKey}&language={language}";
+        return await GetAsync<TmdbEpisodeDto>(url);
+    }
+
     private async Task<T?> GetAsync<T>(string url)
     {
         try
