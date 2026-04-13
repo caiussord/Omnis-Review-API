@@ -1,21 +1,22 @@
 ﻿
 # Omnis Review API
 
-A modern ASP.NET Core REST API that integrates with **TMDB (The Movie Database)** and **Google Books** APIs, providing comprehensive entertainment data and book information management capabilities.
+A modern ASP.NET Core REST API that integrates with **TMDB (The Movie Database)**, **Google Books**, and **RAWG Video Game Database** APIs, providing comprehensive entertainment data, book information, and video game database capabilities.
 
-## 🎯 Features
+## Features
 
 - **TMDB Integration**: Search and retrieve detailed information about movies and TV series
 - **Google Books Integration**: Search books by title, author, ISBN, and publisher
+- **RAWG Integration**: Complete video game database with search, filtering, and advanced queries
 - **RESTful API**: Clean, well-documented endpoints following REST conventions
-- **Full Test Coverage**: 60+ unit tests with 100% passing rate
+- **Full Test Coverage**: 70+ unit tests with 100% passing rate
 - **Secure Configuration**: API keys managed through User Secrets
 - **Structured Logging**: Comprehensive diagnostic tracing with ILogger
 - **Dependency Injection**: Built-in .NET DI container for loose coupling
 - **Authentication & Authorization**: JWT tokens with ASP.NET Core Identity
 - **Database**: Entity Framework Core with SQL Server
 
-## 🛠 Technology Stack
+## Technology Stack
 
 - **.NET 10** with **C# 14.0**
 - **ASP.NET Core** REST API framework
@@ -26,7 +27,7 @@ A modern ASP.NET Core REST API that integrates with **TMDB (The Movie Database)*
 - **System.Text.Json** for JSON serialization
 - **ASP.NET Core Identity** for authentication
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -35,6 +36,7 @@ A modern ASP.NET Core REST API that integrates with **TMDB (The Movie Database)*
 - API Keys:
   - [TMDB API Key](https://www.themoviedb.org/settings/api)
   - [Google Books API Key](https://console.cloud.google.com/)
+  - [RAWG API Key](https://rawg.io/api-console)
 
 ### Installation
 
@@ -54,6 +56,7 @@ A modern ASP.NET Core REST API that integrates with **TMDB (The Movie Database)*
    dotnet user-secrets init
    dotnet user-secrets set "Tmdb:ApiKey" "YOUR_TMDB_API_KEY_HERE"
    dotnet user-secrets set "GoogleBooks:ApiKey" "YOUR_GOOGLE_BOOKS_API_KEY_HERE"
+   dotnet user-secrets set "Rawg:ApiKey" "YOUR_RAWG_API_KEY_HERE"
    ```
 
 4. **Update database connection**
@@ -75,7 +78,7 @@ A modern ASP.NET Core REST API that integrates with **TMDB (The Movie Database)*
 
 ---
 
-## 📺 TMDB API Integration
+## TMDB API Integration
 
 ### Overview
 
@@ -136,7 +139,7 @@ curl "http://localhost:5168/api/tmdb/movies/550/cast"
 
 ---
 
-## 📚 Google Books API Integration
+## Google Books API Integration
 
 ### Overview
 
@@ -231,6 +234,197 @@ curl "http://localhost:5168/api/googlebooks/WQW-JQAACAAJ"
 
 ---
 
+## RAWG Video Game Database Integration
+
+### Overview
+
+The RAWG integration provides access to the world's largest video game database with comprehensive game data, including search, filtering by genres, platforms, and sorting capabilities.
+
+**Base URL**: `https://api.rawg.io/api`
+
+### Key Features
+
+- **7 Search Methods**: Multiple ways to discover games
+- **Advanced Filtering**: Filter by genre, platform, release date, and more
+- **Detailed Game Info**: Ratings, platforms, stores, screenshots, tags
+- **Pagination Support**: Configurable page size (up to 40 results per page)
+- **Performance**: Optimized for fast responses with comprehensive logging
+
+### Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/rawg/search?query={query}&page={page}&pageSize={size}` | General game search |
+| GET | `/api/rawg/search/genre?genre={genre}&page={page}&pageSize={size}` | Search by genre |
+| GET | `/api/rawg/search/platform?platform={platform}&page={page}&pageSize={size}` | Search by platform |
+| GET | `/api/rawg/{gameId}` | Get game details by ID |
+| GET | `/api/rawg/popular?page={page}&pageSize={size}` | Get most popular games |
+| GET | `/api/rawg/upcoming?page={page}&pageSize={size}` | Get upcoming releases |
+| GET | `/api/rawg/sort/{sortBy}?page={page}&pageSize={size}` | Get games sorted by criteria |
+
+### Supported Genres
+
+Action, Adventure, Casual, Educational, Fighting, Indie, Massively Multiplayer, Platform, Puzzle, Racing, Role-playing, Shooter, Simulation, Sports, Strategy
+
+### Supported Platforms
+
+PC, macOS, PlayStation 3, PlayStation 4, PlayStation 5, Xbox 360, Xbox One, Xbox Series X/S, Nintendo Switch, iOS, Android, Web, Wii, Wii U
+
+### Example Requests
+
+**Search Games:**
+```bash
+curl "http://localhost:5168/api/rawg/search?query=Call%20of%20Duty&page=1&pageSize=20"
+```
+
+**Search by Genre:**
+```bash
+curl "http://localhost:5168/api/rawg/search/genre?genre=action&page=1&pageSize=20"
+```
+
+**Search by Platform:**
+```bash
+curl "http://localhost:5168/api/rawg/search/platform?platform=pc&page=1&pageSize=20"
+```
+
+**Get Popular Games:**
+```bash
+curl "http://localhost:5168/api/rawg/popular?page=1&pageSize=20"
+```
+
+**Get Upcoming Games:**
+```bash
+curl "http://localhost:5168/api/rawg/upcoming?page=1&pageSize=20"
+```
+
+**Get Game by ID:**
+```bash
+curl "http://localhost:5168/api/rawg/3498"
+```
+
+**Get Games Sorted by Rating:**
+```bash
+curl "http://localhost:5168/api/rawg/sort/rating?page=1&pageSize=20"
+```
+
+### Example Response (Game Search)
+
+```json
+{
+  "count": 58231,
+  "next": "https://api.rawg.io/api/games?search=call+of+duty&page=2",
+  "previous": null,
+  "results": [
+    {
+      "id": 3,
+      "slug": "call-of-duty",
+      "name": "Call of Duty",
+      "playtime": 6,
+      "platforms": [
+        {
+          "platform": {
+            "id": 4,
+            "name": "PC",
+            "slug": "pc"
+          }
+        },
+        {
+          "platform": {
+            "id": 14,
+            "name": "Xbox 360",
+            "slug": "xbox360"
+          }
+        }
+      ],
+      "stores": [
+        {
+          "store": {
+            "id": 1,
+            "name": "Steam",
+            "slug": "steam",
+            "domain": "steampowered.com"
+          }
+        }
+      ],
+      "released": "2003-10-29",
+      "tba": false,
+      "background_image": "https://media.rawg.io/media/games/...",
+      "rating": 8.5,
+      "rating_top": 5,
+      "ratings": [
+        {
+          "id": 5,
+          "title": "exceptional",
+          "count": 450,
+          "percent": 65.2
+        },
+        {
+          "id": 4,
+          "title": "recommended",
+          "count": 200,
+          "percent": 28.9
+        }
+      ],
+      "added": 987654,
+      "updated": "2024-01-15T10:30:00Z",
+      "genres": [
+        {
+          "id": 12,
+          "name": "Shooter",
+          "slug": "shooter"
+        }
+      ],
+      "tags": [
+        {
+          "id": 40836,
+          "name": "Full controller support",
+          "slug": "full-controller-support"
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Response Fields Explanation
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | int | Unique game identifier |
+| `name` | string | Game title |
+| `slug` | string | URL-friendly game name |
+| `released` | string | Release date (ISO format) |
+| `playtime` | int | Average playtime in hours |
+| `rating` | float | Average user rating (0-5) |
+| `ratings` | array | Detailed rating distribution |
+| `platforms` | array | Available platforms |
+| `stores` | array | Where to buy (Steam, Epic, etc.) |
+| `genres` | array | Game genres/categories |
+| `tags` | array | Additional game tags |
+| `added` | int | Number of library additions |
+| `updated` | string | Last update timestamp |
+
+### Pagination
+
+All endpoints support pagination with:
+- `page`: Page number (default: 1)
+- `pageSize`: Results per page (default: 20, max: 40)
+
+Example:
+```bash
+# Get page 2 with 30 results per page
+curl "http://localhost:5168/api/rawg/search?query=zelda&page=2&pageSize=30"
+```
+
+### Constraints
+
+- **Max Page Size**: 40 results per request (prevents API overload)
+- **Rate Limiting**: RAWG API enforces rate limits (handled automatically)
+- **Query Parameters**: Required for search endpoints
+- **Game ID**: Use numeric ID from API responses
+
+---
+
 ## 🧪 Testing
 
 ### Running Tests
@@ -247,14 +441,15 @@ dotnet test --verbosity detailed
 
 Run specific test class:
 ```bash
-dotnet test --filter "ClassName=GoogleBooksServiceTests"
+dotnet test --filter "ClassName=RawgServiceTests"
 ```
 
 ### Test Coverage
 
-- **Total Tests**: 60+
-- **Pass Rate**: 100% ✅
+- **Total Tests**: 70+
+- **Pass Rate**: 100% 
 - **Test Categories**:
+  - RAWG Service (11 tests)
   - Google Books Service (8 tests)
   - TMDB Service (27+ tests)
   - Authentication (25+ tests)
@@ -319,6 +514,9 @@ Configuration values are applied in this order (later overrides earlier):
   "GoogleBooks": {
     "ApiKey": ""
   },
+  "Rawg": {
+    "ApiKey": ""
+  },
   "Logging": {
     "LogLevel": {
       "Default": "Information"
@@ -352,6 +550,29 @@ dotnet user-secrets set "GoogleBooks:ApiKey" "your_key_here"
 1. Ensure API is running: `dotnet run`
 2. Verify internet connection
 3. Check TMDB API key validity at https://www.themoviedb.org/settings/api
+
+### RAWG JSON Deserialization Error
+
+**Error**: `System.Text.Json.JsonException: The JSON value could not be converted...`
+
+**Solution**:
+1. Ensure RAWG API key is correctly configured in User Secrets
+2. Check that the API key is valid at https://rawg.io/api-console
+3. Verify JSON response structure matches DTO definitions
+4. Check API rate limiting (RAWG has per-second request limits)
+
+### RAWG No Results Returned
+
+**Issue**: Search endpoint returns empty results or HTTP 204
+
+**Debugging Steps**:
+1. Check Debug logs in Visual Studio Output window
+2. Verify API key is set: `dotnet user-secrets list | findstr Rawg`
+3. Test API connectivity manually:
+   ```bash
+   curl "https://api.rawg.io/api/games?search=mario&key=YOUR_API_KEY"
+   ```
+4. Verify search query has results at https://rawg.io
 
 ### Google Books API Returns 403 Forbidden
 
@@ -394,7 +615,7 @@ taskkill /PID <PID> /F
 
 ---
 
-## 🔐 Security
+## Security
 
 - **Never commit API keys** to version control
 - Use **User Secrets** for local development
@@ -405,7 +626,7 @@ taskkill /PID <PID> /F
 
 ---
 
-## 📖 Documentation
+## Documentation
 
 Full API documentation via **Swagger/OpenAPI**:
 - **Interactive UI**: `http://localhost:5168/swagger`
@@ -413,7 +634,7 @@ Full API documentation via **Swagger/OpenAPI**:
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Contributions welcome! Please:
 1. Create feature branch: `git checkout -b feature/your-feature`
@@ -423,7 +644,7 @@ Contributions welcome! Please:
 
 ---
 
-## 📄 License
+## License
 
 MIT License - see LICENSE file for details
 
