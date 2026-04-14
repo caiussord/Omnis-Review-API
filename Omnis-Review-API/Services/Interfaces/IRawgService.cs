@@ -9,6 +9,10 @@ public interface IRawgService
     Task<RawgPagedResultDto?> SearchGamesByPlatformAsync(string platform, int page = 1, int pageSize = 20);
     Task<RawgPagedResultDto?> GetPopularGamesAsync(int page = 1, int pageSize = 20);
     Task<RawgPagedResultDto?> GetUpcomingGamesAsync(int page = 1, int pageSize = 20);
-    Task<RawgGameDto?> GetGameByIdAsync(int gameId);
+    Task<RawgGameDetailDto?> GetGameByIdAsync(int gameId);
     Task<RawgPagedResultDto?> GetGamesBySortAsync(string sortBy, int page = 1, int pageSize = 20);
+    Task<RawgPagedResultsDto<RawgDeveloperDto>?> GetDevelopersAsync(int page = 1, int pageSize = 20);
+    Task<RawgDeveloperDetailDto?> GetDeveloperByIdAsync(int developerId);
+    Task<RawgPagedResultsDto<RawgPublisherDto>?> GetPublishersAsync(int page = 1, int pageSize = 20);
+    Task<RawgPublisherDetailDto?> GetPublisherByIdAsync(int publisherId);
 }
