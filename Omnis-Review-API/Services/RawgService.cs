@@ -71,11 +71,11 @@ public class RawgService : IRawgService
         return await GetAsync<RawgPagedResultDto>(url);
     }
 
-    public async Task<RawgGameDto?> GetGameByIdAsync(int gameId)
+    public async Task<RawgGameDetailDto?> GetGameByIdAsync(int gameId)
     {
         _logger.LogInformation("Fetching game details for ID: {GameId}", gameId);
         var url = $"{BaseUrl}/games/{gameId}?key={_apiKey}";
-        return await GetAsync<RawgGameDto>(url);
+        return await GetAsync<RawgGameDetailDto>(url);
     }
 
     public async Task<RawgPagedResultDto?> GetGamesBySortAsync(string sortBy, int page = 1, int pageSize = 20)
@@ -92,14 +92,57 @@ public class RawgService : IRawgService
         return await GetAsync<RawgPagedResultDto>(url);
     }
 
+    public async Task<RawgPagedResultsDto<RawgDeveloperDto>?> GetDevelopersAsync(int page = 1, int pageSize = 20)
+    {
+        _logger.LogInformation("Fetching developers, page: {Page}", page);
+        var url = $"{BaseUrl}/developers?page={page}&page_size={pageSize}&key={_apiKey}";
+        return await GetAsync<RawgPagedResultsDto<RawgDeveloperDto>>(url);
+    }
+
+    public async Task<RawgDeveloperDetailDto?> GetDeveloperByIdAsync(int developerId)
+    {
+        _logger.LogInformation("Fetching developer details for ID: {DeveloperId}", developerId);
+        var url = $"{BaseUrl}/developers/{developerId}?key={_apiKey}";
+        return await GetAsync<RawgDeveloperDetailDto>(url);
+    }
+
+    public async Task<RawgPagedResultsDto<RawgPublisherDto>?> GetPublishersAsync(int page = 1, int pageSize = 20)
+    {
+        _logger.LogInformation("Fetching publishers, page: {Page}", page);
+        var url = $"{BaseUrl}/publishers?page={page}&page_size={pageSize}&key={_apiKey}";
+        return await GetAsync<RawgPagedResultsDto<RawgPublisherDto>>(url);
+    }
+
+    public async Task<RawgPublisherDetailDto?> GetPublisherByIdAsync(int publisherId)
+    {
+        _logger.LogInformation("Fetching publisher details for ID: {PublisherId}", publisherId);
+        var url = $"{BaseUrl}/publishers/{publisherId}?key={_apiKey}";
+        return await GetAsync<RawgPublisherDetailDto>(url);
+    }
+
+
     private async Task<T?> GetAsync<T>(string url) where T : class
     {
         try
         {
             // Log mascarando a API key
-            var urlWithoutKey = url.Contains("key=") 
-                ? url.Substring(0, url.LastIndexOf("&key=")) + "&key=***" 
-                : url;
+            var urlWithoutKey = url;
+            if (url.Contains("key="))
+            {
+                var ampKeyIndex = url.LastIndexOf("&key=");
+                var questionKeyIndex = url.LastIndexOf("?key=");
+
+                if (ampKeyIndex > -1)
+                {
+                    // API key is not the first parameter
+                    urlWithoutKey = url.Substring(0, ampKeyIndex) + "&key=***";
+                }
+                else if (questionKeyIndex > -1)
+                {
+                    // API key is the first/only parameter
+                    urlWithoutKey = url.Substring(0, questionKeyIndex) + "?key=***";
+                }
+            }
 
             _logger.LogDebug("Calling RAWG API: {Url}", urlWithoutKey);
             var response = await _httpClient.GetAsync(url);

@@ -99,4 +99,52 @@ public class RawgController : ControllerBase
         var result = await _rawgService.GetGamesBySortAsync(sortBy, page, pageSize);
         return Ok(result);
     }
+
+    [HttpGet("developers")]
+    public async Task<IActionResult> GetDevelopers([FromQuery] int page = 1, [FromQuery] int pageSize = 20)
+    {
+        if (pageSize > 40)
+            pageSize = 40;
+
+        var result = await _rawgService.GetDevelopersAsync(page, pageSize);
+        return Ok(result);
+    }
+
+    [HttpGet("developers/{developerId}")]
+    public async Task<IActionResult> GetDeveloperDetails([FromRoute] int developerId)
+    {
+        if (developerId <= 0)
+            return BadRequest("Developer ID must be a positive number");
+
+        var result = await _rawgService.GetDeveloperByIdAsync(developerId);
+
+        if (result is null)
+            return NotFound("Developer not found");
+
+        return Ok(result);
+    }
+
+    [HttpGet("publishers")]
+    public async Task<IActionResult> GetPublishers([FromQuery] int page = 1, [FromQuery] int pageSize = 20)
+    {
+        if (pageSize > 40)
+            pageSize = 40;
+
+        var result = await _rawgService.GetPublishersAsync(page, pageSize);
+        return Ok(result);
+    }
+
+    [HttpGet("publishers/{publisherId}")]
+    public async Task<IActionResult> GetPublisherDetails([FromRoute] int publisherId)
+    {
+        if (publisherId <= 0)
+            return BadRequest("Publisher ID must be a positive number");
+
+        var result = await _rawgService.GetPublisherByIdAsync(publisherId);
+
+        if (result is null)
+            return NotFound("Publisher not found");
+
+        return Ok(result);
+    }
 }
