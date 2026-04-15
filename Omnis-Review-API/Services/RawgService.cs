@@ -120,6 +120,74 @@ public class RawgService : IRawgService
         return await GetAsync<RawgPublisherDetailDto>(url);
     }
 
+    public async Task<RawgPagedResultDto?> SearchGamesCardAsync(string query, int page = 1, int pageSize = 20)
+    {
+        var result = await SearchGamesAsync(query, page, pageSize);
+        if (result?.Results == null) return null;
+
+        var cardResults = result.Results
+            .Select(game => new RawgGameDto
+            {
+                Id = game.Id,
+                Name = game.Name,
+                BackgroundImage = game.BackgroundImage,
+                Rating = game.Rating,
+                Genres = game.Genres
+            })
+            .ToList();
+
+        return new RawgPagedResultDto
+        {
+            Count = result.Count,
+            Next = result.Next,
+            Previous = result.Previous,
+            Results = cardResults
+        };
+    }
+
+    public async Task<RawgPagedResultDto?> GetPopularGamesCardAsync(int page = 1, int pageSize = 20)
+    {
+        var result = await GetPopularGamesAsync(page, pageSize);
+        if (result?.Results == null) return null;
+
+        var cardResults = result.Results
+            .Select(game => new RawgGameDto
+            {
+                Id = game.Id,
+                Name = game.Name,
+                BackgroundImage = game.BackgroundImage,
+                Rating = game.Rating,
+                Genres = game.Genres
+            })
+            .ToList();
+
+        return new RawgPagedResultDto
+        {
+            Count = result.Count,
+            Next = result.Next,
+            Previous = result.Previous,
+            Results = cardResults
+        };
+    }
+
+    public async Task<RawgGameDetailCardDto?> GetGameDetailAsync(int gameId)
+    {
+        var detail = await GetGameByIdAsync(gameId);
+        if (detail is null) return null;
+
+        return new RawgGameDetailCardDto
+        {
+            Id = detail.Id,
+            BackgroundImage = detail.BackgroundImage,
+            Name = detail.Name,
+            Rating = detail.Rating,
+            Genres = detail.Genres,
+            Description = detail.Description,
+            Released = detail.Released,
+            Developers = detail.Developers,
+            Publishers = detail.Publishers
+        };
+    }
 
     private async Task<T?> GetAsync<T>(string url) where T : class
     {

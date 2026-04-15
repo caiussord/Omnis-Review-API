@@ -10,4 +10,10 @@ public interface IGoogleBooksService
     Task<GoogleBooksPagedResultDto?> SearchByISBNAsync(string isbn);
     Task<GoogleBooksPagedResultDto?> SearchByPublisherAsync(string publisher, int startIndex = 0, int maxResults = 10);
     Task<GoogleBooksBookDto?> GetBookByIdAsync(string bookId);
+
+    Task<List<BookCardDto>?> SearchBooksCardAsync(string query, int startIndex = 0, int maxResults = 10);
+    Task<BookDetailDto?> GetBookDetailAsync(string bookId);
+
+    Task<List<BookCardDto>?> GetBestsellerBooksCardAsync(int page = 0);
+    Task<List<BookCardDto>?> GetBooksByGenreCardAsync(string genre, int page = 0);
 }

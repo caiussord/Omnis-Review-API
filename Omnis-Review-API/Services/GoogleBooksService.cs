@@ -60,6 +60,95 @@ public class GoogleBooksService : IGoogleBooksService
         return await GetAsync<GoogleBooksBookDto>(url);
     }
 
+    public async Task<List<BookCardDto>?> SearchBooksCardAsync(string query, int startIndex = 0, int maxResults = 10)
+    {
+        var result = await SearchBooksAsync(query, startIndex, maxResults);
+        if (result?.Items == null) return null;
+
+        var cardResults = new List<BookCardDto>();
+        foreach (var item in result.Items)
+        {
+            var volumeInfo = item.VolumeInfo;
+            if (volumeInfo != null)
+            {
+                cardResults.Add(new BookCardDto
+                {
+                    Id = item.Id,
+                    Title = volumeInfo.Title,
+                    AverageRating = volumeInfo.AverageRating,
+                    Categories = volumeInfo.Categories,
+                    CoverImage = volumeInfo.ImageLinks?.Thumbnail
+                });
+            }
+        }
+
+        return cardResults;
+    }
+
+    public async Task<BookDetailDto?> GetBookDetailAsync(string bookId)
+    {
+        var book = await GetBookByIdAsync(bookId);
+        if (book?.VolumeInfo == null) return null;
+
+        var volumeInfo = book.VolumeInfo;
+        return new BookDetailDto
+        {
+            Id = book.Id,
+            Title = volumeInfo.Title,
+            AverageRating = volumeInfo.AverageRating,
+            Categories = volumeInfo.Categories,
+            CoverImage = volumeInfo.ImageLinks?.Thumbnail,
+            Authors = volumeInfo.Authors,
+            Publisher = volumeInfo.Publisher,
+            PublishedDate = volumeInfo.PublishedDate,
+            Description = volumeInfo.Description,
+            PageCount = volumeInfo.PageCount
+        };
+    }
+
+    public async Task<List<BookCardDto>?> GetBestsellerBooksCardAsync(int page = 0)
+    {
+        var startIndex = page * 10;
+        var query = "subject:bestseller";
+        var url = $"{BaseUrl}/volumes?q={Uri.EscapeDataString(query)}&orderBy=relevance&startIndex={startIndex}&maxResults=10&key={_apiKey}";
+
+        var result = await GetAsync<GoogleBooksPagedResultDto>(url);
+        if (result?.Items is null) return null;
+
+        return result.Items
+            .Select(item => new BookCardDto
+            {
+                Id = item.Id,
+                Title = item.VolumeInfo?.Title ?? string.Empty,
+                CoverImage = item.VolumeInfo?.ImageLinks?.Thumbnail,
+                AverageRating = item.VolumeInfo?.AverageRating ?? 0
+            })
+            .ToList();
+    }
+
+    public async Task<List<BookCardDto>?> GetBooksByGenreCardAsync(string genre, int page = 0)
+    {
+        if (string.IsNullOrWhiteSpace(genre))
+            return null;
+
+        var startIndex = page * 10;
+        var query = $"subject:{Uri.EscapeDataString(genre)}";
+        var url = $"{BaseUrl}/volumes?q={query}&startIndex={startIndex}&maxResults=10&key={_apiKey}";
+
+        var result = await GetAsync<GoogleBooksPagedResultDto>(url);
+        if (result?.Items is null) return null;
+
+        return result.Items
+            .Select(item => new BookCardDto
+            {
+                Id = item.Id,
+                Title = item.VolumeInfo?.Title ?? string.Empty,
+                CoverImage = item.VolumeInfo?.ImageLinks?.Thumbnail,
+                AverageRating = item.VolumeInfo?.AverageRating ?? 0
+            })
+            .ToList();
+    }
+
     private async Task<T?> GetAsync<T>(string url)
     {
         try

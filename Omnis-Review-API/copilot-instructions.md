@@ -2,11 +2,32 @@
 
 Você é um especialista em C# e .NET 10 atuando no projeto Omnis Review API. Siga estas diretrizes estritamente ao gerar código ou sugerir refatorações.
 
+## 🎯 METODOLOGIA: TDD (Test-Driven Development)
+
+**IMPORTANTE: SEMPRE implemente da seguinte forma:**
+1. ✅ **PRIMEIRO**: Criar os testes (NUnit)
+2. ✅ **DEPOIS**: Implementar o método/serviço para passar nos testes
+3. ❌ NUNCA implementar método sem teste antes
+
+**Padrão:**
+- Teste falha (Red)
+- Implementar mínimo necessário (Green)
+- Refatorar se necessário (Refactor)
+
+## 📝 DOCUMENTAÇÃO: NÃO GERAR
+
+**IMPORTANTE: NUNCA gere documentação automática**
+- ❌ Sem resumos automáticos
+- ❌ Sem README gerado
+- ❌ Sem comentários explicativos extensos
+- ✅ APENAS código e testes
+- ✅ Documentação APENAS se explicitamente solicitado
+
 ## Tecnologias e Versões
 - Framework: .NET 10 (C# 14).
 - ORM: Entity Framework Core com abordagem Code First.
 - Autenticação: ASP.NET Core Identity com JWT (JSON Web Tokens).
-- Testes: NUnit (Obrigatório para testes de unidade e integração).
+- Testes: NUnit (Obrigatório para testes de unidade e integração - **SEMPRE PRIMEIRO com TDD**).
 
 ## Estrutura de Pastas e Namespaces
 O projeto segue uma estrutura de camadas organizada da seguinte forma:

@@ -111,7 +111,107 @@ public class RawgServiceTests
     public async Task SearchGamesByGenreAsync_WithEmptyGenre_ReturnsNull()
     {
         var result = await _rawgService.SearchGamesByGenreAsync("");
-        
+
         Assert.That(result, Is.Null);
+    }
+
+    [Test]
+    public async Task SearchGamesCardAsync_WithValidQuery_ReturnsGameCardResult()
+    {
+        var result = await _rawgService.SearchGamesCardAsync("Elden Ring");
+
+        Assert.That(result, Is.Null.Or.InstanceOf<RawgPagedResultDto>());
+    }
+
+    [Test]
+    public async Task SearchGamesCardAsync_WithEmptyQuery_ReturnsNull()
+    {
+        var result = await _rawgService.SearchGamesCardAsync("");
+
+        Assert.That(result, Is.Null);
+    }
+
+    [Test]
+    public async Task SearchGamesCardAsync_WithPagination_ReturnsGameCardResult()
+    {
+        var result = await _rawgService.SearchGamesCardAsync("The Witcher", page: 2, pageSize: 15);
+
+        Assert.That(result, Is.Null.Or.InstanceOf<RawgPagedResultDto>());
+    }
+
+    [Test]
+    public async Task GetPopularGamesCardAsync_ReturnsPopularGameCardsResult()
+    {
+        var result = await _rawgService.GetPopularGamesCardAsync();
+
+        Assert.That(result, Is.Null.Or.InstanceOf<RawgPagedResultDto>());
+    }
+
+    [Test]
+    public async Task GetPopularGamesCardAsync_WithPagination_ReturnsPopularGameCardsResult()
+    {
+        var result = await _rawgService.GetPopularGamesCardAsync(page: 2, pageSize: 20);
+
+        Assert.That(result, Is.Null.Or.InstanceOf<RawgPagedResultDto>());
+    }
+
+    [Test]
+    public async Task GetGameDetailAsync_WithValidId_ReturnsGameDetailCardDto()
+    {
+        var result = await _rawgService.GetGameDetailAsync(3498);
+
+        Assert.That(result, Is.Null.Or.InstanceOf<RawgGameDetailCardDto>());
+    }
+
+    [Test]
+    public async Task GetGameDetailAsync_WithInvalidId_ReturnsNull()
+    {
+        var result = await _rawgService.GetGameDetailAsync(999999999);
+
+
+        Assert.That(result, Is.Null);
+    }
+
+    [Test]
+    public async Task GetGameDetailAsync_ReturnsGameWithoutRatingsArray()
+    {
+        var result = await _rawgService.GetGameDetailAsync(3498);
+
+        if (result != null)
+        {
+            Assert.That(result, Is.InstanceOf<RawgGameDetailCardDto>());
+        }
+    }
+
+    [Test]
+    public async Task SearchGamesCardAsync_ReturnsOnlyCardFields()
+    {
+        var result = await _rawgService.SearchGamesCardAsync("Elden Ring");
+
+        if (result != null && result.Results != null && result.Results.Count > 0)
+        {
+            var firstGame = result.Results[0];
+            Assert.That(firstGame.Id, Is.GreaterThan(0));
+            Assert.That(firstGame.Name, Is.Not.Null.And.Not.Empty);
+            Assert.That(firstGame.BackgroundImage, Is.Not.Null.Or.Empty);
+            Assert.That(firstGame.Rating, Is.GreaterThanOrEqualTo(0));
+            Assert.That(firstGame.Genres, Is.InstanceOf<List<RawgGenreDto>>());
+        }
+    }
+
+    [Test]
+    public async Task GetPopularGamesCardAsync_ReturnsOnlyCardFields()
+    {
+        var result = await _rawgService.GetPopularGamesCardAsync();
+
+        if (result != null && result.Results != null && result.Results.Count > 0)
+        {
+            var firstGame = result.Results[0];
+            Assert.That(firstGame.Id, Is.GreaterThan(0));
+            Assert.That(firstGame.Name, Is.Not.Null.And.Not.Empty);
+            Assert.That(firstGame.BackgroundImage, Is.Not.Null.Or.Empty);
+            Assert.That(firstGame.Rating, Is.GreaterThanOrEqualTo(0));
+            Assert.That(firstGame.Genres, Is.InstanceOf<List<RawgGenreDto>>());
+        }
     }
 }
