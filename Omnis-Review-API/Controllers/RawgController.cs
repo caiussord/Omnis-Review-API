@@ -147,4 +147,46 @@ public class RawgController : ControllerBase
 
         return Ok(result);
     }
+
+    [HttpGet("games/search/card")]
+    public async Task<IActionResult> SearchGamesCard([FromQuery] string query, [FromQuery] int page = 1, [FromQuery] int pageSize = 20)
+    {
+        if (string.IsNullOrWhiteSpace(query))
+            return BadRequest("Query parameter is required");
+
+        if (pageSize > 40)
+            pageSize = 40;
+
+        var result = await _rawgService.SearchGamesCardAsync(query, page, pageSize);
+        if (result == null)
+            return NotFound("Nenhum jogo encontrado");
+
+        return Ok(result);
+    }
+
+    [HttpGet("games/{gameId}/detail")]
+    public async Task<IActionResult> GetGameDetail([FromRoute] int gameId)
+    {
+        if (gameId <= 0)
+            return BadRequest("Game ID must be a positive number");
+
+        var result = await _rawgService.GetGameDetailAsync(gameId);
+        if (result == null)
+            return NotFound("Jogo não encontrado");
+
+        return Ok(result);
+    }
+
+    [HttpGet("games/popular/card")]
+    public async Task<IActionResult> GetPopularGamesCard([FromQuery] int page = 1, [FromQuery] int pageSize = 20)
+    {
+        if (pageSize > 40)
+            pageSize = 40;
+
+        var result = await _rawgService.GetPopularGamesCardAsync(page, pageSize);
+        if (result == null)
+            return NotFound("Nenhum jogo popular encontrado");
+
+        return Ok(result);
+    }
 }

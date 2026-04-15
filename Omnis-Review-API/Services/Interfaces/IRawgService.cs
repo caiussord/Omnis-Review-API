@@ -15,4 +15,8 @@ public interface IRawgService
     Task<RawgDeveloperDetailDto?> GetDeveloperByIdAsync(int developerId);
     Task<RawgPagedResultsDto<RawgPublisherDto>?> GetPublishersAsync(int page = 1, int pageSize = 20);
     Task<RawgPublisherDetailDto?> GetPublisherByIdAsync(int publisherId);
+
+    Task<RawgPagedResultDto?> SearchGamesCardAsync(string query, int page = 1, int pageSize = 20);
+    Task<RawgPagedResultDto?> GetPopularGamesCardAsync(int page = 1, int pageSize = 20);
+    Task<RawgGameDetailCardDto?> GetGameDetailAsync(int gameId);
 }

@@ -18,4 +18,13 @@ public interface ITmdbService
     Task<TmdbPagedResultDto<TmdbSeriesDto>?> GetTopRatedSeriesAsync(int page = 1, string language = "pt-BR");
     Task<TmdbSeasonDto?> GetSeasonAsync(int seriesId, int seasonNumber, string language = "pt-BR");
     Task<TmdbEpisodeDto?> GetEpisodeAsync(int seriesId, int seasonNumber, int episodeNumber, string language = "pt-BR");
+
+    Task<TmdbPagedResultDto<TmdbMovieCardDto>?> SearchMoviesCardAsync(string query, int page = 1, string language = "pt-BR");
+    Task<TmdbPagedResultDto<TmdbSeriesCardDto>?> SearchSeriesCardAsync(string query, int page = 1, string language = "pt-BR");
+    Task<TmdbMovieDetailDto?> GetMovieDetailAsync(int movieId, string language = "pt-BR");
+    Task<TmdbSeriesDetailDto?> GetSeriesDetailAsync(int seriesId, string language = "pt-BR");
+    Task<TmdbPagedResultDto<TmdbMovieCardDto>?> GetPopularMoviesCardAsync(int page = 1, string language = "pt-BR");
+    Task<TmdbPagedResultDto<TmdbSeriesCardDto>?> GetPopularSeriesCardAsync(int page = 1, string language = "pt-BR");
+    Task<TmdbPagedResultDto<TmdbMovieCardDto>?> GetTopRatedMoviesCardAsync(int page = 1, string language = "pt-BR");
+    Task<TmdbPagedResultDto<TmdbSeriesCardDto>?> GetTopRatedSeriesCardAsync(int page = 1, string language = "pt-BR");
 }

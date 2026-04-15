@@ -20,4 +20,8 @@
         <ProjectReference Include="..\Omnis-Review-API\Omnis-Review-API.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Integration\Controllers\" />
+    </ItemGroup>
+
 </Project>

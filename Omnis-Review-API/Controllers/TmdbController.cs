@@ -117,4 +117,90 @@ public class TmdbController : ControllerBase
         var result = await _tmdbService.GetEpisodeAsync(seriesId, seasonNumber, episodeNumber);
         return Ok(result);
     }
+
+    [HttpGet("movies/search/card")]
+    public async Task<IActionResult> SearchMoviesCard([FromQuery] string query, [FromQuery] int page = 1)
+    {
+        if (string.IsNullOrWhiteSpace(query))
+            return BadRequest("Query parameter is required");
+
+        var result = await _tmdbService.SearchMoviesCardAsync(query, page);
+        if (result == null)
+            return NotFound("Nenhum filme encontrado");
+
+        return Ok(result);
+    }
+
+    [HttpGet("series/search/card")]
+    public async Task<IActionResult> SearchSeriesCard([FromQuery] string query, [FromQuery] int page = 1)
+    {
+        if (string.IsNullOrWhiteSpace(query))
+            return BadRequest("Query parameter is required");
+
+        var result = await _tmdbService.SearchSeriesCardAsync(query, page);
+        if (result == null)
+            return NotFound("Nenhuma série encontrada");
+
+        return Ok(result);
+    }
+
+    [HttpGet("movies/{id}/detail")]
+    public async Task<IActionResult> GetMovieDetail([FromRoute] int id)
+    {
+        var result = await _tmdbService.GetMovieDetailAsync(id);
+        if (result == null)
+            return NotFound($"Filme com ID {id} não encontrado");
+
+        return Ok(result);
+    }
+
+    [HttpGet("series/{id}/detail")]
+    public async Task<IActionResult> GetSeriesDetail([FromRoute] int id)
+    {
+        var result = await _tmdbService.GetSeriesDetailAsync(id);
+        if (result == null)
+            return NotFound($"Série com ID {id} não encontrada");
+
+        return Ok(result);
+    }
+
+    [HttpGet("movies/popular/card")]
+    public async Task<IActionResult> GetPopularMoviesCard([FromQuery] int page = 1)
+    {
+        var result = await _tmdbService.GetPopularMoviesCardAsync(page);
+        if (result == null)
+            return NotFound("Nenhum filme popular encontrado");
+
+        return Ok(result);
+    }
+
+    [HttpGet("series/popular/card")]
+    public async Task<IActionResult> GetPopularSeriesCard([FromQuery] int page = 1)
+    {
+        var result = await _tmdbService.GetPopularSeriesCardAsync(page);
+        if (result == null)
+            return NotFound("Nenhuma série popular encontrada");
+
+        return Ok(result);
+    }
+
+    [HttpGet("movies/top-rated/card")]
+    public async Task<IActionResult> GetTopRatedMoviesCard([FromQuery] int page = 1)
+    {
+        var result = await _tmdbService.GetTopRatedMoviesCardAsync(page);
+        if (result == null)
+            return NotFound("Nenhum filme top-rated encontrado");
+
+        return Ok(result);
+    }
+
+    [HttpGet("series/top-rated/card")]
+    public async Task<IActionResult> GetTopRatedSeriesCard([FromQuery] int page = 1)
+    {
+        var result = await _tmdbService.GetTopRatedSeriesCardAsync(page);
+        if (result == null)
+            return NotFound("Nenhuma série top-rated encontrada");
+
+        return Ok(result);
+    }
 }

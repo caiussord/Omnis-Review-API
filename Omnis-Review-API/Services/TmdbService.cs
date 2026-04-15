@@ -46,27 +46,33 @@ public class TmdbService : ITmdbService
     public async Task<List<TmdbCastDto>?> GetMovieCastAsync(int movieId, string language = "pt-BR")
     {
         var url = $"{BaseUrl}/movie/{movieId}/credits?api_key={_apiKey}&language={language}";
-        var response = await GetAsync<dynamic>(url);
-        
-        if (response is null)
+        var response = await GetAsync<JsonElement?>(url);
+
+        if (!response.HasValue)
             return null;
 
         var cast = new List<TmdbCastDto>();
-        var castArray = response?["cast"] as JsonElement?;
-        
-        if (castArray.HasValue)
+
+        try
         {
-            foreach (var item in castArray.Value.EnumerateArray().Take(20))
+            if (response.Value.TryGetProperty("cast", out var castArray))
             {
-                cast.Add(new TmdbCastDto
+                foreach (var item in castArray.EnumerateArray().Take(20))
                 {
-                    Id = item.GetProperty("id").GetInt32(),
-                    Name = item.GetProperty("name").GetString(),
-                    Character = item.GetProperty("character").GetString(),
-                    ProfilePath = item.GetProperty("profile_path").GetString(),
-                    Order = item.GetProperty("order").GetInt32()
-                });
+                    cast.Add(new TmdbCastDto
+                    {
+                        Id = item.GetProperty("id").GetInt32(),
+                        Name = item.GetProperty("name").GetString() ?? string.Empty,
+                        Character = item.GetProperty("character").GetString() ?? string.Empty,
+                        ProfilePath = item.GetProperty("profile_path").GetString(),
+                        Order = item.GetProperty("order").GetInt32()
+                    });
+                }
             }
+        }
+        catch (Exception)
+        {
+            return null;
         }
 
         return cast;
@@ -75,27 +81,33 @@ public class TmdbService : ITmdbService
     public async Task<List<TmdbCastDto>?> GetSeriesCastAsync(int seriesId, string language = "pt-BR")
     {
         var url = $"{BaseUrl}/tv/{seriesId}/credits?api_key={_apiKey}&language={language}";
-        var response = await GetAsync<dynamic>(url);
-        
-        if (response is null)
+        var response = await GetAsync<JsonElement?>(url);
+
+        if (!response.HasValue)
             return null;
 
         var cast = new List<TmdbCastDto>();
-        var castArray = response?["cast"] as JsonElement?;
-        
-        if (castArray.HasValue)
+
+        try
         {
-            foreach (var item in castArray.Value.EnumerateArray().Take(20))
+            if (response.Value.TryGetProperty("cast", out var castArray))
             {
-                cast.Add(new TmdbCastDto
+                foreach (var item in castArray.EnumerateArray().Take(20))
                 {
-                    Id = item.GetProperty("id").GetInt32(),
-                    Name = item.GetProperty("name").GetString(),
-                    Character = item.GetProperty("character").GetString(),
-                    ProfilePath = item.GetProperty("profile_path").GetString(),
-                    Order = item.GetProperty("order").GetInt32()
-                });
+                    cast.Add(new TmdbCastDto
+                    {
+                        Id = item.GetProperty("id").GetInt32(),
+                        Name = item.GetProperty("name").GetString() ?? string.Empty,
+                        Character = item.GetProperty("character").GetString() ?? string.Empty,
+                        ProfilePath = item.GetProperty("profile_path").GetString(),
+                        Order = item.GetProperty("order").GetInt32()
+                    });
+                }
             }
+        }
+        catch (Exception)
+        {
+            return null;
         }
 
         return cast;
@@ -104,27 +116,33 @@ public class TmdbService : ITmdbService
     public async Task<List<TmdbVideoDto>?> GetMovieVideosAsync(int movieId, string language = "pt-BR")
     {
         var url = $"{BaseUrl}/movie/{movieId}/videos?api_key={_apiKey}&language={language}";
-        var response = await GetAsync<dynamic>(url);
-        
-        if (response is null)
+        var response = await GetAsync<JsonElement?>(url);
+
+        if (!response.HasValue)
             return null;
 
         var videos = new List<TmdbVideoDto>();
-        var resultsArray = response?["results"] as JsonElement?;
-        
-        if (resultsArray.HasValue)
+
+        try
         {
-            foreach (var item in resultsArray.Value.EnumerateArray().Where(v => v.GetProperty("site").GetString() == "YouTube"))
+            if (response.Value.TryGetProperty("results", out var resultsArray))
             {
-                videos.Add(new TmdbVideoDto
+                foreach (var item in resultsArray.EnumerateArray().Where(v => v.TryGetProperty("site", out var site) && site.GetString() == "YouTube"))
                 {
-                    Id = item.GetProperty("id").GetString(),
-                    Name = item.GetProperty("name").GetString(),
-                    Key = item.GetProperty("key").GetString(),
-                    Site = item.GetProperty("site").GetString(),
-                    Type = item.GetProperty("type").GetString()
-                });
+                    videos.Add(new TmdbVideoDto
+                    {
+                        Id = item.GetProperty("id").GetString() ?? string.Empty,
+                        Name = item.GetProperty("name").GetString() ?? string.Empty,
+                        Key = item.GetProperty("key").GetString() ?? string.Empty,
+                        Site = item.GetProperty("site").GetString() ?? string.Empty,
+                        Type = item.GetProperty("type").GetString() ?? string.Empty
+                    });
+                }
             }
+        }
+        catch (Exception)
+        {
+            return null;
         }
 
         return videos;
@@ -133,27 +151,33 @@ public class TmdbService : ITmdbService
     public async Task<List<TmdbVideoDto>?> GetSeriesVideosAsync(int seriesId, string language = "pt-BR")
     {
         var url = $"{BaseUrl}/tv/{seriesId}/videos?api_key={_apiKey}&language={language}";
-        var response = await GetAsync<dynamic>(url);
-        
-        if (response is null)
+        var response = await GetAsync<JsonElement?>(url);
+
+        if (!response.HasValue)
             return null;
 
         var videos = new List<TmdbVideoDto>();
-        var resultsArray = response?["results"] as JsonElement?;
-        
-        if (resultsArray.HasValue)
+
+        try
         {
-            foreach (var item in resultsArray.Value.EnumerateArray().Where(v => v.GetProperty("site").GetString() == "YouTube"))
+            if (response.Value.TryGetProperty("results", out var resultsArray))
             {
-                videos.Add(new TmdbVideoDto
+                foreach (var item in resultsArray.EnumerateArray().Where(v => v.TryGetProperty("site", out var site) && site.GetString() == "YouTube"))
                 {
-                    Id = item.GetProperty("id").GetString(),
-                    Name = item.GetProperty("name").GetString(),
-                    Key = item.GetProperty("key").GetString(),
-                    Site = item.GetProperty("site").GetString(),
-                    Type = item.GetProperty("type").GetString()
-                });
+                    videos.Add(new TmdbVideoDto
+                    {
+                        Id = item.GetProperty("id").GetString() ?? string.Empty,
+                        Name = item.GetProperty("name").GetString() ?? string.Empty,
+                        Key = item.GetProperty("key").GetString() ?? string.Empty,
+                        Site = item.GetProperty("site").GetString() ?? string.Empty,
+                        Type = item.GetProperty("type").GetString() ?? string.Empty
+                    });
+                }
             }
+        }
+        catch (Exception)
+        {
+            return null;
         }
 
         return videos;
@@ -193,6 +217,174 @@ public class TmdbService : ITmdbService
     {
         var url = $"{BaseUrl}/tv/{seriesId}/season/{seasonNumber}/episode/{episodeNumber}?api_key={_apiKey}&language={language}";
         return await GetAsync<TmdbEpisodeDto>(url);
+    }
+
+    public async Task<TmdbPagedResultDto<TmdbMovieCardDto>?> SearchMoviesCardAsync(string query, int page = 1, string language = "pt-BR")
+    {
+        var result = await SearchMoviesAsync(query, page, language);
+        if (result is null) return null;
+
+        return new TmdbPagedResultDto<TmdbMovieCardDto>
+        {
+            Page = result.Page,
+            Results = result.Results?.Select(m => new TmdbMovieCardDto
+            {
+                Id = m.Id,
+                PosterPath = m.PosterPath,
+                Title = m.Title,
+                VoteAverage = m.VoteAverage,
+                GenreIds = m.GenreIds
+            }).ToList() ?? new(),
+            TotalPages = result.TotalPages,
+            TotalResults = result.TotalResults
+        };
+    }
+
+    public async Task<TmdbPagedResultDto<TmdbSeriesCardDto>?> SearchSeriesCardAsync(string query, int page = 1, string language = "pt-BR")
+    {
+        var result = await SearchSeriesAsync(query, page, language);
+        if (result is null) return null;
+
+        return new TmdbPagedResultDto<TmdbSeriesCardDto>
+        {
+            Page = result.Page,
+            Results = result.Results?.Select(s => new TmdbSeriesCardDto
+            {
+                Id = s.Id,
+                PosterPath = s.PosterPath,
+                Name = s.Name,
+                VoteAverage = s.VoteAverage,
+                GenreIds = s.GenreIds
+            }).ToList() ?? new(),
+            TotalPages = result.TotalPages,
+            TotalResults = result.TotalResults
+        };
+    }
+
+    public async Task<TmdbMovieDetailDto?> GetMovieDetailAsync(int movieId, string language = "pt-BR")
+    {
+        var details = await GetMovieDetailsAsync(movieId, language);
+        if (details is null) return null;
+
+        var cast = await GetMovieCastAsync(movieId, language);
+
+        return new TmdbMovieDetailDto
+        {
+            Id = details.Id,
+            PosterPath = details.PosterPath,
+            Title = details.Title,
+            VoteAverage = details.VoteAverage,
+            GenreIds = new(),
+            Overview = details.Overview,
+            ReleaseDate = details.ReleaseDate,
+            Cast = cast ?? new(),
+            Genres = details.Genres ?? new()
+        };
+    }
+
+    public async Task<TmdbSeriesDetailDto?> GetSeriesDetailAsync(int seriesId, string language = "pt-BR")
+    {
+        var details = await GetSeriesDetailsAsync(seriesId, language);
+        if (details is null) return null;
+
+        var cast = await GetSeriesCastAsync(seriesId, language);
+
+        return new TmdbSeriesDetailDto
+        {
+            Id = details.Id,
+            PosterPath = details.PosterPath,
+            Name = details.Name,
+            VoteAverage = details.VoteAverage,
+            GenreIds = new(),
+            Overview = details.Overview,
+            FirstAirDate = details.FirstAirDate,
+            Cast = cast ?? new(),
+            Genres = details.Genres ?? new()
+        };
+    }
+
+    public async Task<TmdbPagedResultDto<TmdbMovieCardDto>?> GetPopularMoviesCardAsync(int page = 1, string language = "pt-BR")
+    {
+        var result = await GetPopularMoviesAsync(page, language);
+        if (result is null) return null;
+
+        return new TmdbPagedResultDto<TmdbMovieCardDto>
+        {
+            Page = result.Page,
+            Results = result.Results?.Select(m => new TmdbMovieCardDto
+            {
+                Id = m.Id,
+                PosterPath = m.PosterPath,
+                Title = m.Title,
+                VoteAverage = m.VoteAverage,
+                GenreIds = m.GenreIds
+            }).ToList() ?? new(),
+            TotalPages = result.TotalPages,
+            TotalResults = result.TotalResults
+        };
+    }
+
+    public async Task<TmdbPagedResultDto<TmdbSeriesCardDto>?> GetPopularSeriesCardAsync(int page = 1, string language = "pt-BR")
+    {
+        var result = await GetPopularSeriesAsync(page, language);
+        if (result is null) return null;
+
+        return new TmdbPagedResultDto<TmdbSeriesCardDto>
+        {
+            Page = result.Page,
+            Results = result.Results?.Select(s => new TmdbSeriesCardDto
+            {
+                Id = s.Id,
+                PosterPath = s.PosterPath,
+                Name = s.Name,
+                VoteAverage = s.VoteAverage,
+                GenreIds = s.GenreIds
+            }).ToList() ?? new(),
+            TotalPages = result.TotalPages,
+            TotalResults = result.TotalResults
+        };
+    }
+
+    public async Task<TmdbPagedResultDto<TmdbMovieCardDto>?> GetTopRatedMoviesCardAsync(int page = 1, string language = "pt-BR")
+    {
+        var result = await GetTopRatedMoviesAsync(page, language);
+        if (result is null) return null;
+
+        return new TmdbPagedResultDto<TmdbMovieCardDto>
+        {
+            Page = result.Page,
+            Results = result.Results?.Select(m => new TmdbMovieCardDto
+            {
+                Id = m.Id,
+                PosterPath = m.PosterPath,
+                Title = m.Title,
+                VoteAverage = m.VoteAverage,
+                GenreIds = m.GenreIds
+            }).ToList() ?? new(),
+            TotalPages = result.TotalPages,
+            TotalResults = result.TotalResults
+        };
+    }
+
+    public async Task<TmdbPagedResultDto<TmdbSeriesCardDto>?> GetTopRatedSeriesCardAsync(int page = 1, string language = "pt-BR")
+    {
+        var result = await GetTopRatedSeriesAsync(page, language);
+        if (result is null) return null;
+
+        return new TmdbPagedResultDto<TmdbSeriesCardDto>
+        {
+            Page = result.Page,
+            Results = result.Results?.Select(s => new TmdbSeriesCardDto
+            {
+                Id = s.Id,
+                PosterPath = s.PosterPath,
+                Name = s.Name,
+                VoteAverage = s.VoteAverage,
+                GenreIds = s.GenreIds
+            }).ToList() ?? new(),
+            TotalPages = result.TotalPages,
+            TotalResults = result.TotalResults
+        };
     }
 
     private async Task<T?> GetAsync<T>(string url)
