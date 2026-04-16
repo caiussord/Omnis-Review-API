@@ -14,4 +14,6 @@ public interface IAuthRepository
     Task<IdentityResult> ChangePasswordAsync(ApplicationUser user, string currentPassword, string newPassword);
     Task<string> GeneratePasswordResetTokenAsync(ApplicationUser user);
     Task<IdentityResult> ResetPasswordAsync(ApplicationUser user, string token, string newPassword);
+    Task<IdentityResult> AddToRoleAsync(ApplicationUser user, string role);
+    Task<IdentityResult> RemoveFromRoleAsync(ApplicationUser user, string role);
 }

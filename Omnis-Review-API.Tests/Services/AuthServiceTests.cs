@@ -227,6 +227,10 @@ public class AuthServiceTests
             .Setup(x => x.CreateUserAsync(It.IsAny<ApplicationUser>(), registerDto.Password))
             .ReturnsAsync(identityResult);
 
+        _mockAuthRepository
+            .Setup(x => x.AddToRoleAsync(It.IsAny<ApplicationUser>(), "User"))
+            .ReturnsAsync(identityResult);
+
         // Act
         var result = await _authService.RegisterAsync(registerDto);
 
@@ -235,6 +239,10 @@ public class AuthServiceTests
         Assert.That(result.Message, Does.Contain("successfully"));
         _mockAuthRepository.Verify(
             x => x.CreateUserAsync(It.IsAny<ApplicationUser>(), registerDto.Password),
+            Times.Once
+        );
+        _mockAuthRepository.Verify(
+            x => x.AddToRoleAsync(It.IsAny<ApplicationUser>(), "User"),
             Times.Once
         );
     }

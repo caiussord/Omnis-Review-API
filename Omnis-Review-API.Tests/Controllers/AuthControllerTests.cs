@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using Moq;
 using OmnisReview.Models;
+using OmnisReview.Models.Auth;
 using OmnisReview.Controllers;
 using OmnisReview.Services.Interfaces;
 using OmnisReview.Tests.Helpers;
@@ -397,6 +398,82 @@ public class AuthControllerTests
 
         // Assert
         Assert.That(result, Is.TypeOf<OkObjectResult>());
+    }
+
+    #endregion
+
+    #region GetCurrentUser Tests
+
+    [Test]
+    public async Task GetCurrentUser_WithValidToken_ReturnsUserData()
+    {
+        var userId = Guid.NewGuid();
+        var userDto = new UserDto
+        {
+            Id = userId,
+            UserName = "testuser",
+            Email = "test@example.com"
+        };
+
+        _mockAuthService
+            .Setup(x => x.GetUserByIdAsync(userId))
+            .ReturnsAsync(userDto);
+
+        var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.NameIdentifier, userId.ToString())
+        };
+        var identity = new ClaimsIdentity(claims);
+        var principal = new ClaimsPrincipal(identity);
+        _authController.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext { User = principal }
+        };
+
+        var result = await _authController.GetCurrentUser();
+
+        Assert.That(result, Is.TypeOf<OkObjectResult>());
+        var okResult = result as OkObjectResult;
+        Assert.That(okResult?.Value, Is.EqualTo(userDto));
+        _mockAuthService.Verify(x => x.GetUserByIdAsync(userId), Times.Once);
+    }
+
+    [Test]
+    public async Task GetCurrentUser_WithoutAuthentication_ReturnsUnauthorized()
+    {
+        _authController.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext { User = new ClaimsPrincipal() }
+        };
+
+        var result = await _authController.GetCurrentUser();
+
+        Assert.That(result, Is.TypeOf<UnauthorizedResult>());
+    }
+
+    [Test]
+    public async Task GetCurrentUser_WithInvalidUserId_ReturnsNotFound()
+    {
+        var userId = Guid.NewGuid();
+
+        _mockAuthService
+            .Setup(x => x.GetUserByIdAsync(userId))
+            .ReturnsAsync((UserDto?)null);
+
+        var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.NameIdentifier, userId.ToString())
+        };
+        var identity = new ClaimsIdentity(claims);
+        var principal = new ClaimsPrincipal(identity);
+        _authController.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext { User = principal }
+        };
+
+        var result = await _authController.GetCurrentUser();
+
+        Assert.That(result, Is.TypeOf<NotFoundResult>());
     }
 
     #endregion

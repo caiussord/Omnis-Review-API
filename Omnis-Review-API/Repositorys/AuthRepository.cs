@@ -57,4 +57,14 @@ public class AuthRepository : IAuthRepository
     {
         return await _userManager.ResetPasswordAsync(user, token, newPassword);
     }
+
+    public async Task<IdentityResult> AddToRoleAsync(ApplicationUser user, string role)
+    {
+        return await _userManager.AddToRoleAsync(user, role);
+    }
+
+    public async Task<IdentityResult> RemoveFromRoleAsync(ApplicationUser user, string role)
+    {
+        return await _userManager.RemoveFromRoleAsync(user, role);
+    }
 }
