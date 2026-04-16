@@ -2,8 +2,10 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using OmnisReview.Models;
+using OmnisReview.Models.Auth;
 using OmnisReview.Repositorys.Interfaces;
 using OmnisReview.Services.Interfaces;
+using OmnisReview.Helpers;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.WebUtilities;
@@ -83,11 +85,18 @@ public class AuthService : IAuthService
         };
 
         var result = await _authRepository.CreateUserAsync(user, model.Password);
-        
+
         if (!result.Succeeded)
         {
             var errors = string.Join(", ", result.Errors.Select(e => e.Description));
             return new AuthResponseDto { IsSuccess = false, Message = $"User creation failed Errors: {errors}" };
+        }
+
+        var roleResult = await _authRepository.AddToRoleAsync(user, "User");
+        if (!roleResult.Succeeded)
+        {
+            var errors = string.Join(", ", roleResult.Errors.Select(e => e.Description));
+            _logger.LogWarning("Failed to assign User role to new user {UserId}: {Errors}", user.Id, errors);
         }
 
         return new AuthResponseDto { IsSuccess = true, Message = "User created successfully" };
@@ -146,10 +155,11 @@ public class AuthService : IAuthService
         var token = await _authRepository.GeneratePasswordResetTokenAsync(user);
         var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
         var resetLink = $"{resetPasswordUrl}?userId={user.Id}&token={encodedToken}";
-        var body = $"Clique no link para alterar sua senha: {resetLink}";
+
+        var emailBody = EmailTemplateHelper.GetForgotPasswordEmailBody(user.UserName ?? user.Email, resetLink);
 
         _logger.LogInformation("Sending reset password email to {Email}", user.Email);
-        await _emailSender.SendEmailAsync(user.Email, "Reset password", body);
+        await _emailSender.SendEmailAsync(user.Email, "Redefinição de Senha - Omnis Review", emailBody);
         _logger.LogInformation("Reset password email sent to {Email}", user.Email);
 
         return new AuthResponseDto { IsSuccess = true, Message = "If the account exists, a reset link was sent." };
@@ -171,6 +181,65 @@ public class AuthService : IAuthService
         }
 
         return new AuthResponseDto { IsSuccess = true, Message = "Password reset successfully" };
+    }
+
+    public async Task<UserDto?> GetUserByIdAsync(Guid userId)
+    {
+        var user = await _authRepository.FindByIdAsync(userId);
+        if (user == null)
+            return null;
+
+        var roles = await _authRepository.GetRolesAsync(user);
+
+        return new UserDto
+        {
+            Id = user.Id,
+            UserName = user.UserName,
+            Email = user.Email,
+            Roles = roles.ToList()
+        };
+    }
+
+    public async Task<AuthResponseDto> AssignRoleAsync(Guid userId, string roleName)
+    {
+        var user = await _authRepository.FindByIdAsync(userId);
+        if (user == null)
+            return new AuthResponseDto { IsSuccess = false, Message = "User not found" };
+
+        var userRoles = await _authRepository.GetRolesAsync(user);
+        if (userRoles.Contains(roleName))
+            return new AuthResponseDto { IsSuccess = false, Message = $"User already has role '{roleName}'" };
+
+        var result = await _authRepository.AddToRoleAsync(user, roleName);
+        if (!result.Succeeded)
+        {
+            var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+            return new AuthResponseDto { IsSuccess = false, Message = $"Failed to assign role Errors: {errors}" };
+        }
+
+        _logger.LogInformation("User {UserId} assigned to role {RoleName}", userId, roleName);
+        return new AuthResponseDto { IsSuccess = true, Message = $"User assigned to role '{roleName}' successfully" };
+    }
+
+    public async Task<AuthResponseDto> RemoveRoleAsync(Guid userId, string roleName)
+    {
+        var user = await _authRepository.FindByIdAsync(userId);
+        if (user == null)
+            return new AuthResponseDto { IsSuccess = false, Message = "User not found" };
+
+        var userRoles = await _authRepository.GetRolesAsync(user);
+        if (!userRoles.Contains(roleName))
+            return new AuthResponseDto { IsSuccess = false, Message = $"User does not have role '{roleName}'" };
+
+        var result = await _authRepository.RemoveFromRoleAsync(user, roleName);
+        if (!result.Succeeded)
+        {
+            var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+            return new AuthResponseDto { IsSuccess = false, Message = $"Failed to remove role Errors: {errors}" };
+        }
+
+        _logger.LogInformation("Role {RoleName} removed from user {UserId}", roleName, userId);
+        return new AuthResponseDto { IsSuccess = true, Message = $"Role '{roleName}' removed from user successfully" };
     }
 
     private JwtSecurityToken GetToken(List<Claim> authClaims)

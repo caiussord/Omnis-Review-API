@@ -1,0 +1,7 @@
+namespace OmnisReview.Models.Auth;
+
+public class AssignRoleDto
+{
+    public string UserId { get; set; } = null!;
+    public string RoleName { get; set; } = null!;
+}
